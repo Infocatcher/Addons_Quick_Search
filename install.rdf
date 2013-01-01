@@ -7,11 +7,9 @@
 		<em:id>addonsQuickSearch@infocatcher</em:id>
 		<em:type>2</em:type>
 		<em:name>Addons Quick Search</em:name>
-		<em:version>0.1.0pre7</em:version>
+		<em:version>0.1.0</em:version>
 		<em:description>Type first letters of add-on name to find them in the list or press Ctrl+Up/Down to switch between add-ons categories</em:description>
 		<em:creator>Infocatcher</em:creator>
-		<!--<em:optionsURL>chrome://addonsquicksearch/content/options.xul</em:optionsURL>-->
-		<!--<em:iconURL>chrome://addonsquicksearch/content/icon.png</em:iconURL>-->
 		<em:updateURL>http://infocatcher.ucoz.net/ext/fx/addons_quick_search/update.rdf</em:updateURL>
 		<em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLgtEbrhCdZetIAanFNvkT441WwBgXcg1Zzlo5s5
 		              j9VLByj/L6UXAVqSria1dejjkKfxVbRXvqalJ7mENRambKpZ4AfV3dBCKUDjME56CMaAK7+DxMqaM3
