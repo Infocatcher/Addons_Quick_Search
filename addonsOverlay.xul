@@ -1,0 +1,273 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="data:text/css, :root { -moz-user-focus: normal; }" type="text/css"?>
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/javascript">
+	<![CDATA[
+	window.addEventListener("DOMContentLoaded", function init(e) {
+		window.removeEventListener(e.type, init, false);
+
+		const prefNS = "extensions.addonsQuickSearch.";
+		const selectedAttr = "addonsQuickSearch_lastSelected";
+		var saveSelected = Application.prefs.getValue(prefNS + "saveSelected", 2);
+		var input = "";
+		var _lastKeyTime = 0;
+
+		var root = document.documentElement;
+		var categories = document.getElementById("categories");
+		var viewport = document.getElementById("view-port");
+
+		var saveSelectedItemsTimer = 0;
+		var currentList, currentCategory;
+		var watchListChange = false;
+
+		var selectedItems = {};
+		try {
+			selectedItems = JSON.parse(root.getAttribute(selectedAttr) || "{}");
+		}
+		catch(e) {
+			Components.utils.reportError(e);
+		}
+
+		window.addEventListener("keypress", keypressHandler, true);
+		if(saveSelected) {
+			window.addEventListener("select", currentListChanged, true);
+			window.addEventListener("popstate", currentListChanged, true);
+		}
+		window.addEventListener("unload", function destroy(e) {
+			window.removeEventListener(e.type, destroy, false);
+			window.removeEventListener("keypress", keypressHandler, true);
+			if(saveSelected) {
+				window.removeEventListener("select", currentListChanged, true);
+				window.removeEventListener("popstate", currentListChanged, true);
+				saveSelectedItem();
+				saveSelectedItems(true);
+			}
+		}, false);
+
+		if(saveSelected) {
+			setTimeout(function() {
+				currentList = getCurrentList();
+				currentCategory = getCurrentCategory();
+				restoreSelectedItem(currentList, currentCategory);
+				watchListChange = saveSelected > 1;
+			}, 0);
+		}
+		else {
+			root.removeAttribute(selectedAttr);
+			document.persist(root.id, selectedAttr);
+		}
+
+		function keypressHandler(e) {
+			if(
+				(e.ctrlKey || e.metaKey)
+				&& (e.keyCode == e.DOM_VK_UP || e.keyCode == e.DOM_VK_DOWN)
+			) {
+				stopEvent(e);
+				selectCategory(e.keyCode == e.DOM_VK_DOWN);
+				return;
+			}
+
+			var fe = document.commandDispatcher.focusedElement;
+			if(fe instanceof HTMLInputElement || fe instanceof HTMLTextAreaElement) {
+				try {
+					if(typeof fe.selectionStart == "number")
+						return;
+				}
+				catch(e) {
+				}
+			}
+
+			if(e.ctrlKey || e.altKey || e.metaKey || !e.charCode || hasOpenedPopup())
+				return;
+
+			var chr = String.fromCharCode(e.charCode).toLowerCase();
+			// Based on _keyNavigate method from chrome://global/content/bindings/tree.xml#tree
+			if(e.timeStamp - _lastKeyTime > 1000)
+				input = chr;
+			else
+				input += chr;
+			_lastKeyTime = e.timeStamp;
+			// If all letters in the incremental string are the same, just
+			// try to match the first one
+			var search = /^(.)\1+$/.test(input) ? chr : input;
+			findItem(search, e);
+		}
+		function findItem(search, e) {
+			var list = getCurrentList();
+			if(!list)
+				return;
+			e && stopEvent(e);
+
+			var searchLength = search.length;
+			var items = list.children;
+			var start = 0;
+			if(searchLength == 1)
+				start = list.selectedIndex + 1;
+
+			for(var i = 0, itemsCount = items.length; i < itemsCount; ++i) {
+				var item = items[(i + start) % itemsCount];
+				if(!isNodeVisible(item))
+					continue;
+				var name = item.getAttribute("name") || "";
+				if(name.trimLeft().substr(0, searchLength).toLowerCase() == search) {
+					selectItem(list, item)
+					break;
+				}
+			}
+		}
+		function isNodeVisible(node) {
+			var bo = node.boxObject;
+			return bo.width > 0 && bo.height > 0;
+		}
+		function currentListChanged() {
+			if(!watchListChange)
+				return;
+			setTimeout(function() {
+				var prevCategory = currentCategory;
+				currentCategory = getCurrentCategory();
+				var prevList = currentList;
+				currentList = getCurrentList();
+				// getCurrentList() is null for #detail-view
+				if(currentCategory == prevCategory && prevList && currentList)
+					return;
+				//_log(
+				//	"Category changed: " + prevCategory + " => " + currentCategory +
+				//	(!prevList || !currentList ? "\n#detail-view ?" : "")
+				//);
+				saveSelectedItem(prevList, prevCategory);
+				restoreSelectedItem(currentList, currentCategory);
+			}, 0);
+		}
+		function saveSelectedItem(list, cat) {
+			if(!list)
+				list = getCurrentList();
+			if(!cat)
+				cat = getCurrentCategory();
+			if(!list || !cat)
+				return;
+			var si = list.selectedItem;
+			if(!si && !list.hasChildNodes())
+				return;
+			selectedItems[cat] = si && si.getAttribute("value") || "";
+			//_log("saveSelectedItem: " + (si && si.getAttribute("value")) + " [" + cat + "]");
+
+			clearTimeout(saveSelectedItemsTimer);
+			saveSelectedItemsTimer = setTimeout(saveSelectedItems, 1000);
+		}
+		function saveSelectedItems(cleanup) {
+			if(cleanup === true) { // Old setTimeout implementation pass "actual lateness" argument
+				var validCategories = { __proto__: null };
+				var list = categories;
+				var items = list.children;
+				for(var i = 0, l = items.length; i < l; ++i) {
+					var item = items[i];
+					var itemId = item.getAttribute("value")
+						|| "unknown category #" + i;
+					validCategories[itemId] = true;
+				}
+				for(var cat in selectedItems) if(selectedItems.hasOwnProperty(cat))
+					if(!(cat in validCategories))
+						delete selectedItems[cat];
+			}
+			root.setAttribute(selectedAttr, JSON.stringify(selectedItems));
+			document.persist(root.id, selectedAttr);
+		}
+		function restoreSelectedItem(list, cat, _stopTime, _delay) {
+			if(!list || !cat)
+				return;
+			var lastSelected = selectedItems[cat] || null;
+			if(!lastSelected)
+				return;
+			var items = list.getElementsByAttribute("value", lastSelected);
+			if(items.length) {
+				selectItem(list, items[0]);
+				//_log("restoreSelectedItem: " + lastSelected + " [" + cat + "]");
+				return;
+			}
+			// Wait for async loading...
+			if(!_stopTime) {
+				_stopTime = Date.now() + 2500; // Prevent recursion
+				_delay = 0;
+			}
+			else {
+				if(Date.now() > _stopTime)
+					return;
+				if(_delay < 60)
+					_delay = Math.floor((1 + _delay)*1.2);
+			}
+			setTimeout(function() {
+				restoreSelectedItem(list, cat, _stopTime, _delay);
+			}, _delay);
+		}
+		function selectItem(list, item) {
+			list.selectedItem = item;
+			list.focus();
+			item.focus();
+
+			var pos = Application.prefs.getValue(prefNS + "scrollPosition", 50)/100;
+			var listRect = list.getBoundingClientRect();
+			var itemRect = item.getBoundingClientRect();
+			var dy = (itemRect.top - listRect.top) - pos*(listRect.height - itemRect.height);
+			list.scrollBoxObject.scrollBy(0, dy);
+			list.ensureElementIsVisible(item); // Should be visible, but...
+		}
+		function stopEvent(e) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		function getCurrentList() {
+			var panel = viewport.selectedPanel;
+			if(!panel)
+				return null;
+			var id = panel.id;
+			if(id == "discover-view" || id == "detail-view")
+				return null;
+			return panel.getElementsByTagName("richlistbox")[0];
+		}
+		function getCurrentCategory() {
+			var list = categories;
+			var si = categories.selectedItem;
+			if(!si)
+				return null;
+			return si.getAttribute("value")
+				|| "unknown category #" + list.selectedIndex;
+		}
+		function selectCategory(next) {
+			var list = categories;
+			var items = list.children;
+			var itemsCount = items.length
+			var start = next
+				? list.selectedIndex + 1
+				: itemsCount - list.selectedIndex;
+			if(!next)
+				items.reverse();
+			for(var i = 0; i < itemsCount; ++i) {
+				var item = items[(i + start) % itemsCount];
+				//if(!item.hidden)
+				if(item.boxObject.width && item.boxObject.height) {
+					list.selectedItem = item;
+					list.ensureElementIsVisible(item);
+					var curList = getCurrentList();
+					curList && curList.focus();
+					break;
+				}
+			}
+		}
+		function hasOpenedPopup() {
+			return Array.some(
+				document.getElementsByTagName("menupopup"),
+				function(popup) {
+					return popup.state == "open";
+				}
+			);
+		}
+
+		//function _log(s) {
+		//	Components.classes["@mozilla.org/consoleservice;1"]
+		//		.getService(Components.interfaces.nsIConsoleService)
+		//		.logStringMessage("[Addons Quick Search] " + s);
+		//}
+	}, false);
+	]]>
+	</script>
+</overlay>

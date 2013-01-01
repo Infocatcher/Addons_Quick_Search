@@ -1,0 +1,3 @@
+content addonsquicksearch .
+overlay about:addons chrome://addonsquicksearch/content/addonsOverlay.xul
+overlay chrome://mozapps/content/extensions/extensions.xul chrome://addonsquicksearch/content/addonsOverlay.xul
