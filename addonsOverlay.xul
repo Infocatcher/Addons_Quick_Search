@@ -131,10 +131,11 @@
 				if(currentCategory == prevCategory && prevList && currentList)
 					return;
 				//_log(
-				//	"Category changed: " + prevCategory + " => " + currentCategory +
-				//	(!prevList || !currentList ? "\n#detail-view ?" : "")
+				//	"Category changed: " + prevCategory + " => " + currentCategory
+				//	+ (!prevList || !currentList ? "\n#detail-view ?" : "")
 				//);
-				saveSelectedItem(prevList, prevCategory);
+				if(prevList && prevCategory)
+					saveSelectedItem(prevList, prevCategory);
 				restoreSelectedItem(currentList, currentCategory);
 			}, 0);
 		}
