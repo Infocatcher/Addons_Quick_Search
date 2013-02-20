@@ -245,7 +245,7 @@
 			for(var i = 0; i < itemsCount; ++i) {
 				var item = items[(i + start) % itemsCount];
 				//if(!item.hidden)
-				if(item.boxObject.width && item.boxObject.height) {
+				if(isNodeVisible(item)) {
 					list.selectedItem = item;
 					list.ensureElementIsVisible(item);
 					var curList = getCurrentList();
