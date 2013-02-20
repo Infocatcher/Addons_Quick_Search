@@ -8,7 +8,7 @@
 		<em:type>2</em:type>
 		<em:name>Addons Quick Search</em:name>
 		<em:version>0.1.0</em:version>
-		<em:description>Type first letters of add-on name to find them in the list or press Ctrl+Up/Down to switch between add-ons categories</em:description>
+		<em:description>Type first letters of add-on name to find them in the list or press Ctrl+↑/↓ to switch between add-ons categories</em:description>
 		<em:creator>Infocatcher</em:creator>
 		<em:updateURL>http://infocatcher.ucoz.net/ext/fx/addons_quick_search/update.rdf</em:updateURL>
 		<em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLgtEbrhCdZetIAanFNvkT441WwBgXcg1Zzlo5s5
@@ -43,7 +43,7 @@
 			<Description>
 				<em:locale>ru</em:locale>
 				<em:name>Addons Quick Search</em:name>
-				<em:description>Наберите первые буквы названия дополнения, чтобы найти его в списке, или нажмите Ctrl+Вверх/Вниз для переключения между типами дополнений</em:description>
+				<em:description>Наберите первые буквы названия дополнения, чтобы найти его в списке, или нажмите Ctrl+↑/↓ для переключения между типами дополнений</em:description>
 				<em:creator>Infocatcher</em:creator>
 			</Description>
 		</em:localized>
