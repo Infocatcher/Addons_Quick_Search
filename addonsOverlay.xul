@@ -136,8 +136,30 @@
 				//);
 				if(prevList && prevCategory)
 					saveSelectedItem(prevList, prevCategory);
+				else
+					checkForDetailsView(currentCategory);
 				restoreSelectedItem(currentList, currentCategory);
 			}, 0);
+		}
+		function checkForDetailsView(cat) {
+			var addonId;
+			if(
+				window.gViewController
+				&& /^addons:\/\/detail\/([^\s\/?&#]+)/.test(gViewController.currentViewId)
+			) try {
+				addonId = decodeURIComponent(RegExp.$1);
+			}
+			catch(e) {
+			}
+			if(!addonId)
+				return;
+			if(!cat)
+				cat = getCurrentCategory();
+			if(!cat)
+				return;
+			selectedItems[cat] = addonId;
+			//_log("checkForDetailsView: " + addonId + " [" + cat + "]");
+			scheduleSave();
 		}
 		function saveSelectedItem(list, cat) {
 			if(!list)
@@ -151,7 +173,9 @@
 				return;
 			selectedItems[cat] = si && si.getAttribute("value") || "";
 			//_log("saveSelectedItem: " + (si && si.getAttribute("value")) + " [" + cat + "]");
-
+			scheduleSave();
+		}
+		function scheduleSave() {
 			clearTimeout(saveSelectedItemsTimer);
 			saveSelectedItemsTimer = setTimeout(saveSelectedItems, 1000);
 		}
