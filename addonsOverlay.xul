@@ -60,6 +60,7 @@
 		function keypressHandler(e) {
 			if(
 				(e.ctrlKey || e.metaKey)
+				&& !e.shiftKey && !e.altKey
 				&& (e.keyCode == e.DOM_VK_UP || e.keyCode == e.DOM_VK_DOWN)
 			) {
 				stopEvent(e);
