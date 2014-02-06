@@ -6,6 +6,7 @@
 `*` - улучшено<br>
 
 ##### master/HEAD
+##### 0.1.1 (2014-02-06)
 `*` Добавлено сохранение текущего дополнения при открытии страницы с подробностями (<a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/1">#1</a>).<br>
 `x` Исправлено: сочетания клавиш Ctrl+Up/Down не работали, если в фокусе был фрейм «Получить дополнения» (<a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/2">#2</a>).<br>
 

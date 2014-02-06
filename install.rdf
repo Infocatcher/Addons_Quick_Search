@@ -7,7 +7,7 @@
 		<em:id>addonsQuickSearch@infocatcher</em:id>
 		<em:type>2</em:type>
 		<em:name>Addons Quick Search</em:name>
-		<em:version>0.1.0.1</em:version>
+		<em:version>0.1.1</em:version>
 		<em:description>Type first letters of add-on name to find them in the list or press Ctrl+↑/↓ to switch between add-ons categories</em:description>
 		<em:creator>Infocatcher</em:creator>
 		<em:updateURL>http://infocatcher.ucoz.net/ext/fx/addons_quick_search/update.rdf</em:updateURL>
