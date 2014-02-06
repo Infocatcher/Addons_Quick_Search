@@ -29,6 +29,13 @@
 		}
 
 		window.addEventListener("keypress", keypressHandler, true);
+		var topWindow = getTopWindow(top);
+		if(topWindow) {
+			if(topWindow == top)
+				topWindow = null;
+			else
+				topWindow.addEventListener("keypress", keypressHandlerGlobal, true);
+		}
 		if(saveSelected) {
 			window.addEventListener("select", currentListChanged, true);
 			window.addEventListener("popstate", currentListChanged, true);
@@ -36,6 +43,8 @@
 		window.addEventListener("unload", function destroy(e) {
 			window.removeEventListener(e.type, destroy, false);
 			window.removeEventListener("keypress", keypressHandler, true);
+			if(topWindow)
+				topWindow.removeEventListener("keypress", keypressHandlerGlobal, true);
 			if(saveSelected) {
 				window.removeEventListener("select", currentListChanged, true);
 				window.removeEventListener("popstate", currentListChanged, true);
@@ -58,15 +67,8 @@
 		}
 
 		function keypressHandler(e) {
-			if(
-				(e.ctrlKey || e.metaKey)
-				&& !e.shiftKey && !e.altKey
-				&& (e.keyCode == e.DOM_VK_UP || e.keyCode == e.DOM_VK_DOWN)
-			) {
-				stopEvent(e);
-				selectCategory(e.keyCode == e.DOM_VK_DOWN);
+			if(handleHotkeys(e)) // Global hotkeys handler doesn't work with Electrolysis
 				return;
-			}
 
 			var fe = document.commandDispatcher.focusedElement;
 			if(fe instanceof HTMLInputElement || fe instanceof HTMLTextAreaElement) {
@@ -92,6 +94,34 @@
 			// try to match the first one
 			var search = /^(.)\1+$/.test(input) ? chr : input;
 			findItem(search, e);
+		}
+		function keypressHandlerGlobal(e) {
+			var fw = document.commandDispatcher.focusedWindow;
+			if(fw && fw.top == top)
+				handleHotkeys(e);
+		}
+		function handleHotkeys(e) {
+			if(
+				(e.ctrlKey || e.metaKey)
+				&& !e.shiftKey && !e.altKey
+				&& (e.keyCode == e.DOM_VK_UP || e.keyCode == e.DOM_VK_DOWN)
+			) {
+				stopEvent(e);
+				selectCategory(e.keyCode == e.DOM_VK_DOWN);
+				return true;
+			}
+			return false;
+		}
+		function getTopWindow(window) {
+			var dwu = Components.classes["@mozilla.org/inspector/dom-utils;1"]
+				.getService(Components.interfaces.inIDOMUtils);
+			for(;;) {
+				var browser = dwu.getParentForNode(window.document, true);
+				if(!browser)
+					break;
+				window = browser.ownerDocument.defaultView.top;
+			}
+			return window;
 		}
 		function findItem(search, e) {
 			var list = getCurrentList();
