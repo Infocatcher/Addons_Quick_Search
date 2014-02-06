@@ -30,7 +30,7 @@
 
 		window.addEventListener("keypress", keypressHandler, true);
 		var topWindow = getTopWindow(top);
-		if(topWindow) {
+		if(topWindow) { // We use topmost window to handle events from "Get Add-ons" frame
 			if(topWindow == top)
 				topWindow = null;
 			else
