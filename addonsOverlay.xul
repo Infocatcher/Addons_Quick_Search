@@ -8,7 +8,7 @@
 
 		const prefNS = "extensions.addonsQuickSearch.";
 		const selectedAttr = "addonsQuickSearch_lastSelected";
-		var saveSelected = Application.prefs.getValue(prefNS + "saveSelected", 2);
+		var saveSelected = Services.prefs.getIntPref(prefNS + "saveSelected");
 		var input = "";
 		var _lastKeyTime = 0;
 
@@ -260,7 +260,7 @@
 			list.focus();
 			item.focus();
 
-			var pos = Application.prefs.getValue(prefNS + "scrollPosition", 50)/100;
+			var pos = Services.prefs.getIntPref(prefNS + "scrollPosition")/100;
 			var listRect = list.getBoundingClientRect();
 			var itemRect = item.getBoundingClientRect();
 			var dy = (itemRect.top - listRect.top) - pos*(listRect.height - itemRect.height);
