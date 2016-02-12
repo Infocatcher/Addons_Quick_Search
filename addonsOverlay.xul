@@ -71,14 +71,8 @@
 				return;
 
 			var fe = document.commandDispatcher.focusedElement;
-			if(fe instanceof HTMLInputElement || fe instanceof HTMLTextAreaElement) {
-				try {
-					if(typeof fe.selectionStart == "number")
-						return;
-				}
-				catch(e) {
-				}
-			}
+			if(isEditableNode(fe))
+				return;
 
 			if(e.ctrlKey || e.altKey || e.metaKey || !e.charCode || hasOpenedPopup())
 				return;
@@ -111,6 +105,10 @@
 				return true;
 			}
 			return false;
+		}
+		function isEditableNode(node) {
+			var cs = node.ownerDocument.defaultView.getComputedStyle(node, null);
+			return (cs.userModify || cs.MozUserModify) == "read-write";
 		}
 		function getTopWindow(window) {
 			var dwu = Components.classes["@mozilla.org/inspector/dom-utils;1"]
