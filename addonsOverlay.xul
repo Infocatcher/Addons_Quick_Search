@@ -322,6 +322,6 @@
 		//		.logStringMessage("[Addons Quick Search] " + s);
 		//}
 	}, false);
-	//]]>
+	]]>
 	</script>
 </overlay>
