@@ -215,8 +215,7 @@
 				var items = list.children;
 				for(var i = 0, l = items.length; i < l; ++i) {
 					var item = items[i];
-					var itemId = item.getAttribute("value")
-						|| "unknown category #" + i;
+					var itemId = getCategoryId(item);
 					validCategories[itemId] = true;
 				}
 				for(var cat in selectedItems) if(selectedItems.hasOwnProperty(cat))
@@ -279,12 +278,14 @@
 			return panel.getElementsByTagName("richlistbox")[0];
 		}
 		function getCurrentCategory() {
-			var list = categories;
 			var si = categories.selectedItem;
-			if(!si)
-				return null;
-			return si.getAttribute("value")
-				|| "unknown category #" + list.selectedIndex;
+			return si && getCategoryId(si);
+		}
+		function getCategoryId(item) {
+			return item.getAttribute("value")
+				|| item.id
+				|| item.getAttribute("name")
+				|| "unknown category #" + item.control.getIndexOfItem(item);
 		}
 		function selectCategory(next) {
 			var list = categories;
