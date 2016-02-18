@@ -149,26 +149,26 @@
 			return bo.width > 0 && bo.height > 0;
 		}
 		function currentListChanged() {
-			if(!watchListChange)
+			if(watchListChange)
+				setTimeout(_currentListChanged, 0);
+		}
+		function _currentListChanged() {
+			var prevCategory = currentCategory;
+			currentCategory = getCurrentCategory();
+			var prevList = currentList;
+			currentList = getCurrentList();
+			// getCurrentList() is null for #detail-view
+			if(currentCategory == prevCategory && prevList && currentList)
 				return;
-			setTimeout(function() {
-				var prevCategory = currentCategory;
-				currentCategory = getCurrentCategory();
-				var prevList = currentList;
-				currentList = getCurrentList();
-				// getCurrentList() is null for #detail-view
-				if(currentCategory == prevCategory && prevList && currentList)
-					return;
-				//_log(
-				//	"Category changed: " + prevCategory + " => " + currentCategory
-				//	+ (!prevList || !currentList ? "\n#detail-view ?" : "")
-				//);
-				if(prevList && prevCategory)
-					saveSelectedItem(prevList, prevCategory);
-				else
-					checkForDetailsView(currentCategory);
-				restoreSelectedItem(currentList, currentCategory);
-			}, 0);
+			//_log(
+			//	"Category changed: " + prevCategory + " => " + currentCategory
+			//	+ (!prevList || !currentList ? "\n#detail-view ?" : "")
+			//);
+			if(prevList && prevCategory)
+				saveSelectedItem(prevList, prevCategory);
+			else
+				checkForDetailsView(currentCategory);
+			restoreSelectedItem(currentList, currentCategory);
 		}
 		function checkForDetailsView(cat) {
 			var addonId;
