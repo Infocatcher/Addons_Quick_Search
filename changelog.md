@@ -6,7 +6,8 @@
 `*` - improved<br>
 
 ##### master/HEAD
-`x` Fixed compatibility with future Firefox versions (bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">1090880</a>, <a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/3">#3</a>).<br>
+`x` Fixed compatibility with Firefox 47+ (bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">1090880</a>, <a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/3">#3</a>).<br>
+`*` Small internal enhancements.<br>
 
 ##### 0.1.1 (2014-02-06)
 `*` Added saving of selected add-on, if opened details page (<a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/1">#1</a>).<br>
