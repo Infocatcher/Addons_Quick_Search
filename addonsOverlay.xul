@@ -275,6 +275,9 @@
 			var id = panel.id;
 			if(id == "discover-view" || id == "detail-view")
 				return null;
+			var deck = panel.getElementsByAttribute("id", "headered-views-content")[0] || null;
+			if(deck && deck.selectedPanel)
+				panel = deck.selectedPanel;
 			return panel.getElementsByTagName("richlistbox")[0];
 		}
 		function getCurrentCategory() {
