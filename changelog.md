@@ -6,6 +6,8 @@
 `*` - improved<br>
 
 ##### master/HEAD
+`x` Fixed compatibility with Firefox 48+ (<a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/5">#5</a>).<br>
+
 ##### 0.1.2 (2016-02-18)
 `x` Fixed compatibility with Firefox 47+ (bug <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">1090880</a>, <a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/3">#3</a>).<br>
 `*` Small internal enhancements.<br>
