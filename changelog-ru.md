@@ -6,6 +6,7 @@
 `*` - улучшено<br>
 
 ##### master/HEAD
+##### 0.1.3 (2016-08-03)
 `x` Исправлена совместимость с Firefox 48+ (сломано определение текущего списка из-за изменений в DOM, <a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/5">#5</a>).<br>
 
 ##### 0.1.2 (2016-02-18)
