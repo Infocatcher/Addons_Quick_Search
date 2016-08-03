@@ -6,10 +6,10 @@
 `*` - улучшено<br>
 
 ##### master/HEAD
-`x` Исправлена совместимость с Firefox 48+ (<a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/5">#5</a>).<br>
+`x` Исправлена совместимость с Firefox 48+ (сломано определение текущего списка из-за изменений в DOM, <a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/5">#5</a>).<br>
 
 ##### 0.1.2 (2016-02-18)
-`x` Исправлена совместимость с Firefox 47+ (баг <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">1090880</a>, <a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/3">#3</a>).<br>
+`x` Исправлена совместимость с Firefox 47+ (удалены API Application.*, см. баг <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1090880">1090880</a>, <a href="https://github.com/Infocatcher/Addons_Quick_Search/issues/3">#3</a>).<br>
 `*` Небольшие внутренние улучшения.<br>
 
 ##### 0.1.1 (2014-02-06)
