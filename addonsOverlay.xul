@@ -312,7 +312,7 @@
 			}
 		}
 		function hasOpenedPopup() {
-			return Array.some(
+			return Array.prototype.some.call(
 				document.getElementsByTagName("menupopup"),
 				function(popup) {
 					return popup.state == "open";
