@@ -8,6 +8,16 @@
 
 		const prefNS = "extensions.addonsQuickSearch.";
 		const selectedAttr = "addonsQuickSearch_lastSelected";
+		try {
+			var defaultBranch = Services.prefs.getDefaultBranch(prefNS);
+			defaultBranch.getIntPref("scrollPosition");
+		}
+		catch(e) { // NS_ERROR_UNEXPECTED
+			// Firefox 58+: Remove support for extensions having their own prefs file
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=1413413
+			defaultBranch.setIntPref("scrollPosition", 50);
+			defaultBranch.setIntPref("saveSelected", 2);
+		}
 		var saveSelected = Services.prefs.getIntPref(prefNS + "saveSelected");
 		var input = "";
 		var _lastKeyTime = 0;
