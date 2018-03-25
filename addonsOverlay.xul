@@ -121,8 +121,10 @@
 			return (cs.userModify || cs.MozUserModify) == "read-write";
 		}
 		function getTopWindow(window) {
-			var dwu = Components.classes["@mozilla.org/inspector/dom-utils;1"]
-				.getService(Components.interfaces.inIDOMUtils);
+			var dwu = "inIDOMUtils" in Components.interfaces
+				? Components.classes["@mozilla.org/inspector/dom-utils;1"]
+					.getService(Components.interfaces.inIDOMUtils)
+				: InspectorUtils; // Firefox 59+
 			for(;;) {
 				var browser = dwu.getParentForNode(window.document, true);
 				if(!browser)
